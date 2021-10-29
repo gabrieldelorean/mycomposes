@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+
+  home:
+    image: eventosregistry.azurecr.io/wittel-eventos-home
+    restart: "no"
+    ports:
+      - '80:80'
+    networks:
+      - backend
+      
+  admin:
+    image: eventosregistry.azurecr.io/wittel-eventos-admin
+    restart: "no"
+    ports:
+      - '81:80'  
+    networks:
+      - backend  
+
+  db:
+    image: mariadb:10.2
+    restart: "no"
+    environment:
+      MYSQL_ROOT_PASSWORD: Sofia@359899
+      MYSQL_DATABASE: eventos
+    ports:
+      - 3306:3306
+    networks:
+      - backend
+
+
+  api:
+    image: eventosregistry.azurecr.io/wittel-eventos-api
+    restart: "no"
+    depends_on:
+      - db
+    ports:
+      - '82:80'
+    networks:
+      - backend
+
+
+  adminer:
+    image: adminer
+    restart: "no"
+    ports:
+      - 83:8080
+    networks:
+      - backend
+
+networks:     
+  backend:
+    driver: bridge
